@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
         LoadJavaTestGenerated.CompiledJavaAndKotlin.class,
         LoadJavaTestGenerated.CompiledJavaIncludeObjectMethods.class,
         LoadJavaTestGenerated.CompiledKotlin.class,
+        LoadJavaTestGenerated.CompiledKotlinCompilerOnly.class,
         LoadJavaTestGenerated.CompiledKotlinWithStdlib.class,
         LoadJavaTestGenerated.JavaAgainstKotlin.class,
         LoadJavaTestGenerated.KotlinAgainstCompiledJavaWithKotlin.class,
@@ -1848,7 +1849,6 @@ public class LoadJavaTestGenerated extends AbstractLoadJavaTest {
             CompiledKotlin.Enum.class,
             CompiledKotlin.FromLoadJava.class,
             CompiledKotlin.Fun.class,
-            CompiledKotlin.Inline.class,
             CompiledKotlin.MemberOrder.class,
             CompiledKotlin.Nested.class,
             CompiledKotlin.PlatformTypes.class,
@@ -1880,12 +1880,6 @@ public class LoadJavaTestGenerated extends AbstractLoadJavaTest {
             @TestMetadata("AnnotatedAnnotation.kt")
             public void testAnnotatedAnnotation() throws Exception {
                 String fileName = JetTestUtils.navigationMetadata("compiler/testData/loadJava/compiledKotlin/annotations/AnnotatedAnnotation.kt");
-                doTestCompiledKotlin(fileName);
-            }
-
-            @TestMetadata("AnnotatedMethod.kt")
-            public void testAnnotatedMethod() throws Exception {
-                String fileName = JetTestUtils.navigationMetadata("compiler/testData/loadJava/compiledKotlin/annotations/AnnotatedMethod.kt");
                 doTestCompiledKotlin(fileName);
             }
 
@@ -1978,12 +1972,6 @@ public class LoadJavaTestGenerated extends AbstractLoadJavaTest {
                     doTestCompiledKotlin(fileName);
                 }
 
-                @TestMetadata("Deprecated.kt")
-                public void testDeprecated() throws Exception {
-                    String fileName = JetTestUtils.navigationMetadata("compiler/testData/loadJava/compiledKotlin/annotations/classes/Deprecated.kt");
-                    doTestCompiledKotlin(fileName);
-                }
-
                 @TestMetadata("DollarsInAnnotationName.kt")
                 public void testDollarsInAnnotationName() throws Exception {
                     String fileName = JetTestUtils.navigationMetadata("compiler/testData/loadJava/compiledKotlin/annotations/classes/DollarsInAnnotationName.kt");
@@ -2011,12 +1999,6 @@ public class LoadJavaTestGenerated extends AbstractLoadJavaTest {
                 @TestMetadata("NestedClass.kt")
                 public void testNestedClass() throws Exception {
                     String fileName = JetTestUtils.navigationMetadata("compiler/testData/loadJava/compiledKotlin/annotations/classes/NestedClass.kt");
-                    doTestCompiledKotlin(fileName);
-                }
-
-                @TestMetadata("Retention.kt")
-                public void testRetention() throws Exception {
-                    String fileName = JetTestUtils.navigationMetadata("compiler/testData/loadJava/compiledKotlin/annotations/classes/Retention.kt");
                     doTestCompiledKotlin(fileName);
                 }
 
@@ -4203,21 +4185,6 @@ public class LoadJavaTestGenerated extends AbstractLoadJavaTest {
             }
         }
 
-        @TestMetadata("compiler/testData/loadJava/compiledKotlin/inline")
-        @TestDataPath("$PROJECT_ROOT")
-        @RunWith(JUnit3RunnerWithInners.class)
-        public static class Inline extends AbstractLoadJavaTest {
-            public void testAllFilesPresentInInline() throws Exception {
-                JetTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("compiler/testData/loadJava/compiledKotlin/inline"), Pattern.compile("^(.+)\\.kt$"), true);
-            }
-
-            @TestMetadata("inlineFunction.kt")
-            public void testInlineFunction() throws Exception {
-                String fileName = JetTestUtils.navigationMetadata("compiler/testData/loadJava/compiledKotlin/inline/inlineFunction.kt");
-                doTestCompiledKotlin(fileName);
-            }
-        }
-
         @TestMetadata("compiler/testData/loadJava/compiledKotlin/memberOrder")
         @TestDataPath("$PROJECT_ROOT")
         @RunWith(JUnit3RunnerWithInners.class)
@@ -4863,6 +4830,73 @@ public class LoadJavaTestGenerated extends AbstractLoadJavaTest {
             public void testTopLevelVarWithPrivateSetter() throws Exception {
                 String fileName = JetTestUtils.navigationMetadata("compiler/testData/loadJava/compiledKotlin/visibility/TopLevelVarWithPrivateSetter.kt");
                 doTestCompiledKotlin(fileName);
+            }
+        }
+    }
+
+    @TestMetadata("compiler/testData/loadJava/compiledKotlinCompilerOnly")
+    @TestDataPath("$PROJECT_ROOT")
+    @InnerTestClasses({
+            CompiledKotlinCompilerOnly.Annotations.class,
+    })
+    @RunWith(JUnit3RunnerWithInners.class)
+    public static class CompiledKotlinCompilerOnly extends AbstractLoadJavaTest {
+        public void testAllFilesPresentInCompiledKotlinCompilerOnly() throws Exception {
+            JetTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("compiler/testData/loadJava/compiledKotlinCompilerOnly"), Pattern.compile("^(.+)\\.kt$"), true);
+        }
+
+        @TestMetadata("compiler/testData/loadJava/compiledKotlinCompilerOnly/annotations")
+        @TestDataPath("$PROJECT_ROOT")
+        @InnerTestClasses({
+                Annotations.Deprecated.class,
+                Annotations.Inline.class,
+        })
+        @RunWith(JUnit3RunnerWithInners.class)
+        public static class Annotations extends AbstractLoadJavaTest {
+            public void testAllFilesPresentInAnnotations() throws Exception {
+                JetTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("compiler/testData/loadJava/compiledKotlinCompilerOnly/annotations"), Pattern.compile("^(.+)\\.kt$"), true);
+            }
+
+            @TestMetadata("Retention.kt")
+            public void testRetention() throws Exception {
+                String fileName = JetTestUtils.navigationMetadata("compiler/testData/loadJava/compiledKotlinCompilerOnly/annotations/Retention.kt");
+                doTestCompiledKotlin(fileName);
+            }
+
+            @TestMetadata("compiler/testData/loadJava/compiledKotlinCompilerOnly/annotations/deprecated")
+            @TestDataPath("$PROJECT_ROOT")
+            @RunWith(JUnit3RunnerWithInners.class)
+            public static class Deprecated extends AbstractLoadJavaTest {
+                public void testAllFilesPresentInDeprecated() throws Exception {
+                    JetTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("compiler/testData/loadJava/compiledKotlinCompilerOnly/annotations/deprecated"), Pattern.compile("^(.+)\\.kt$"), true);
+                }
+
+                @TestMetadata("DeprecatedClasses.kt")
+                public void testDeprecatedClasses() throws Exception {
+                    String fileName = JetTestUtils.navigationMetadata("compiler/testData/loadJava/compiledKotlinCompilerOnly/annotations/deprecated/DeprecatedClasses.kt");
+                    doTestCompiledKotlin(fileName);
+                }
+
+                @TestMetadata("DeprecatedMethod.kt")
+                public void testDeprecatedMethod() throws Exception {
+                    String fileName = JetTestUtils.navigationMetadata("compiler/testData/loadJava/compiledKotlinCompilerOnly/annotations/deprecated/DeprecatedMethod.kt");
+                    doTestCompiledKotlin(fileName);
+                }
+            }
+
+            @TestMetadata("compiler/testData/loadJava/compiledKotlinCompilerOnly/annotations/inline")
+            @TestDataPath("$PROJECT_ROOT")
+            @RunWith(JUnit3RunnerWithInners.class)
+            public static class Inline extends AbstractLoadJavaTest {
+                public void testAllFilesPresentInInline() throws Exception {
+                    JetTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("compiler/testData/loadJava/compiledKotlinCompilerOnly/annotations/inline"), Pattern.compile("^(.+)\\.kt$"), true);
+                }
+
+                @TestMetadata("inlineFunction.kt")
+                public void testInlineFunction() throws Exception {
+                    String fileName = JetTestUtils.navigationMetadata("compiler/testData/loadJava/compiledKotlinCompilerOnly/annotations/inline/inlineFunction.kt");
+                    doTestCompiledKotlin(fileName);
+                }
             }
         }
     }
