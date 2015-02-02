@@ -68,7 +68,7 @@ public class JetConstructorDelegationCall extends JetElementImplStub<KotlinPlace
         return null;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public JetExpression getCalleeExpression() {
         return findChildByClass(JetExpression.class);
