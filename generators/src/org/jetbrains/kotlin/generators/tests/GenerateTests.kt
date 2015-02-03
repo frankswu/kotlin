@@ -141,6 +141,7 @@ import org.jetbrains.kotlin.codegen.AbstractLineNumberTest
 import org.jetbrains.kotlin.completion.handlers.AbstractKeywordCompletionHandlerTest
 import org.jetbrains.kotlin.idea.kdoc.AbstractKDocHighlightingTest
 import org.jetbrains.kotlin.addImport.AbstractAddImportTest
+import org.jetbrains.kotlin.resolve.calls.AbstractResolvedConstructorDelegationCallsTests
 import org.jetbrains.kotlin.idea.highlighter.*
 
 fun main(args: Array<String>) {
@@ -168,6 +169,10 @@ fun main(args: Array<String>) {
 
         testClass(javaClass<AbstractResolvedCallsTest>()) {
             model("resolvedCalls")
+        }
+
+        testClass(javaClass<AbstractResolvedConstructorDelegationCallsTests>()) {
+            model("resolveConstructorDelegationCalls")
         }
 
         testClass(javaClass<AbstractConstraintSystemTest>()) {
