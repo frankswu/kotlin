@@ -16,15 +16,18 @@
 
 package org.jetbrains.kotlin.load.kotlin.reflect
 
+import org.jetbrains.kotlin.builtins.KotlinBuiltIns
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.descriptors.impl.ModuleDescriptorImpl
+import org.jetbrains.kotlin.di.InjectorForRuntimeDescriptorLoader
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.platform.JavaToKotlinClassMap
-import org.jetbrains.kotlin.builtins.KotlinBuiltIns
-import org.jetbrains.kotlin.di.InjectorForRuntimeDescriptorLoader
+import org.jetbrains.kotlin.serialization.deserialization.LocalClassResolver
 
 public class RuntimeModuleData private(private val injector: InjectorForRuntimeDescriptorLoader) {
     public val module: ModuleDescriptor get() = injector.getModuleDescriptor()
+
+    public val localClassResolver: LocalClassResolver get() = injector.getDeserializationComponentsForJava().components.localClassResolver
 
     class object {
         public fun create(classLoader: ClassLoader): RuntimeModuleData {
