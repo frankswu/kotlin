@@ -27,6 +27,7 @@ import org.jetbrains.kotlin.descriptors.*;
 import org.jetbrains.kotlin.lexer.JetTokens;
 import org.jetbrains.kotlin.psi.*;
 import org.jetbrains.kotlin.resolve.calls.CallResolver;
+import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall;
 import org.jetbrains.kotlin.resolve.calls.results.OverloadResolutionResults;
 import org.jetbrains.kotlin.resolve.calls.util.CallMaker;
 import org.jetbrains.kotlin.resolve.constants.CompileTimeConstant;
@@ -43,9 +44,9 @@ import java.util.*;
 
 import static org.jetbrains.kotlin.descriptors.ReceiverParameterDescriptor.NO_RECEIVER_PARAMETER;
 import static org.jetbrains.kotlin.diagnostics.Errors.*;
+import static org.jetbrains.kotlin.resolve.BindingContext.CONSTRUCTOR_RESOLVED_DELEGATION_CALL;
 import static org.jetbrains.kotlin.resolve.BindingContext.DEFERRED_TYPE;
 import static org.jetbrains.kotlin.types.TypeUtils.NO_EXPECTED_TYPE;
-import static org.jetbrains.kotlin.types.TypeUtils.dependsOnTypeConstructors;
 
 public class BodyResolver {
     private ScriptBodyResolver scriptBodyResolverResolver;
@@ -134,7 +135,7 @@ public class BodyResolver {
     private void resolveSecondaryConstructorBody(
             @NotNull final BodiesResolveContext c,
             @NotNull final JetSecondaryConstructor constructor,
-            @NotNull ConstructorDescriptor descriptor
+            @NotNull final ConstructorDescriptor descriptor
     ) {
         JetScope bodyDeclaringScope = c.getDeclaringScopes().apply(constructor);
         assert bodyDeclaringScope != null;
@@ -149,7 +150,7 @@ public class BodyResolver {
         new Function1<JetScope, Void>() {
             @Override
             public Void invoke(@NotNull JetScope headerInnerScope) {
-                resolveSecondaryConstructorDelegationCall(c, headerInnerScope, constructor);
+                resolveSecondaryConstructorDelegationCall(c, headerInnerScope, constructor, descriptor);
                 return null;
             }
         });
@@ -158,16 +159,21 @@ public class BodyResolver {
     private void resolveSecondaryConstructorDelegationCall(
             @NotNull BodiesResolveContext c,
             @NotNull JetScope scope,
-            @NotNull JetSecondaryConstructor constructor
+            @NotNull JetSecondaryConstructor constructor,
+            @NotNull ConstructorDescriptor descriptor
     ) {
         JetConstructorDelegationCall call = constructor.getDelegationCall();
         if (call == null || call.getCalleeExpression() == null) return;
 
-        callResolver.resolveFunctionCall(
+        OverloadResolutionResults<?> results = callResolver.resolveFunctionCall(
                 trace, scope,
                 CallMaker.makeCall(ReceiverValue.NO_RECEIVER, null, call),
                 NO_EXPECTED_TYPE, c.getOuterDataFlowInfo(), false
         );
+
+        if (results.isSuccess()) {
+            recordConstructorDelegationCall(trace, descriptor, results.getResultingCall());
+        }
     }
 
     public void resolveBodies(@NotNull BodiesResolveContext c) {
@@ -204,6 +210,7 @@ public class BodyResolver {
         final ExpressionTypingServices typeInferrer = expressionTypingServices; // TODO : flow
 
         final Map<JetTypeReference, JetType> supertypes = Maps.newLinkedHashMap();
+        final ResolvedCall<?>[] primaryConstructorDelegatingCall = new ResolvedCall[1];
         JetVisitorVoid visitor = new JetVisitorVoid() {
             private void recordSupertype(JetTypeReference typeReference, JetType supertype) {
                 if (supertype == null) return;
@@ -259,6 +266,13 @@ public class BodyResolver {
                         if (classDescriptor.getKind() == ClassKind.TRAIT) {
                             trace.report(CONSTRUCTOR_IN_TRAIT.on(elementToMark));
                         }
+                        // allow only one delegating constructor
+                        if (primaryConstructorDelegatingCall[0] == null) {
+                            primaryConstructorDelegatingCall[0] = results.getResultingCall();
+                        }
+                        else {
+                            primaryConstructorDelegatingCall[0] = null;
+                        }
                     }
                 }
                 else {
@@ -306,7 +320,19 @@ public class BodyResolver {
                 ? Collections.singleton(((ClassDescriptor) descriptor.getContainingDeclaration()).getTypeConstructor())
                 : Collections.<TypeConstructor>emptySet();
 
+        if (primaryConstructorDelegatingCall[0] != null && primaryConstructor != null) {
+            recordConstructorDelegationCall(trace, primaryConstructor, primaryConstructorDelegatingCall[0]);
+        }
         checkSupertypeList(descriptor, supertypes, parentEnum);
+    }
+
+    private static void recordConstructorDelegationCall(
+            @NotNull BindingTrace trace,
+            @NotNull ConstructorDescriptor constructor,
+            @NotNull ResolvedCall<?> call
+    ) {
+        //noinspection unchecked
+        trace.record(CONSTRUCTOR_RESOLVED_DELEGATION_CALL, constructor, (ResolvedCall<ConstructorDescriptor>) call);
     }
 
     // allowedFinalSupertypes typically contains a enum type of which supertypeOwner is an entry
