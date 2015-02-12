@@ -70,7 +70,7 @@ public class JetConstructorDelegationCall extends JetElementImplStub<KotlinPlace
 
     @NotNull
     @Override
-    public JetExpression getCalleeExpression() {
-        return findChildByClass(JetExpression.class);
+    public JetConstructorDelegationReferenceExpression getCalleeExpression() {
+        return findChildByClass(JetConstructorDelegationReferenceExpression.class);
     }
 }
