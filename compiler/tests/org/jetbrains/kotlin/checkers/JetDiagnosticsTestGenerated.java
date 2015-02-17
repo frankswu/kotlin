@@ -1788,6 +1788,12 @@ public class JetDiagnosticsTestGenerated extends AbstractJetDiagnosticsTest {
                 doTest(fileName);
             }
 
+            @TestMetadata("propertiesInitializationWithOtherInstance.kt")
+            public void testPropertiesInitializationWithOtherInstance() throws Exception {
+                String fileName = JetTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/controlFlowAnalysis/propertiesInitializationWithOtherInstance.kt");
+                doTest(fileName);
+            }
+
             @TestMetadata("propertiesOrderInPackage.kt")
             public void testPropertiesOrderInPackage() throws Exception {
                 String fileName = JetTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/controlFlowAnalysis/propertiesOrderInPackage.kt");
@@ -10340,6 +10346,12 @@ public class JetDiagnosticsTestGenerated extends AbstractJetDiagnosticsTest {
             @TestMetadata("headerSupertypeInitialization.kt")
             public void testHeaderSupertypeInitialization() throws Exception {
                 String fileName = JetTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/secondaryConstructors/headerSupertypeInitialization.kt");
+                doTest(fileName);
+            }
+
+            @TestMetadata("initializationFromOtherInstance.kt")
+            public void testInitializationFromOtherInstance() throws Exception {
+                String fileName = JetTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/secondaryConstructors/initializationFromOtherInstance.kt");
                 doTest(fileName);
             }
 
