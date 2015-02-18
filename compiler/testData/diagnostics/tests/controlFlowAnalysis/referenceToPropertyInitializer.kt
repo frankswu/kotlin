@@ -12,7 +12,7 @@ open class A(val a: A)
 
 class TestObjectLiteral {
     val obj: A = object: A(<!UNINITIALIZED_VARIABLE!>obj<!>) {
-        {
+        constructor {
             val x = <!UNINITIALIZED_VARIABLE!>obj<!>
         }
         fun foo() {
@@ -20,7 +20,7 @@ class TestObjectLiteral {
         }
     }
     val obj1: A = @l ( object: A(<!UNINITIALIZED_VARIABLE!>obj1<!>) {
-        {
+        constructor {
             val x = <!UNINITIALIZED_VARIABLE!>obj1<!>
         }
         fun foo() = obj1

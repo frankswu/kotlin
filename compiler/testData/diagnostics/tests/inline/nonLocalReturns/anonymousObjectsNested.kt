@@ -6,7 +6,7 @@ inline fun <R> inlineFunOnlyLocal(inlineOptions(ONLY_LOCAL_RETURN)p: () -> R) {
 
         val z = p();
 
-        {
+        constructor {
             doCall {
                 p()
             }
@@ -25,9 +25,9 @@ inline fun <R> inlineFunOnlyLocal(inlineOptions(ONLY_LOCAL_RETURN)p: () -> R) {
 inline fun <R> inlineFun(p: () -> R) {
     val s = object {
 
-        val z = <!NON_LOCAL_RETURN_NOT_ALLOWED!>p<!>();
+        val z = <!NON_LOCAL_RETURN_NOT_ALLOWED!>p<!>()
 
-        {
+        constructor {
             doCall {
                 <!NON_LOCAL_RETURN_NOT_ALLOWED!>p<!>()
             }

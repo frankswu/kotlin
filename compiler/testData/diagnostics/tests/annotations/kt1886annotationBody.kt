@@ -15,7 +15,7 @@ annotation class Annotation5() <!ANNOTATION_CLASS_WITH_BODY!>{
 }<!>
 
 annotation class Annotation6() <!ANNOTATION_CLASS_WITH_BODY!>{
-    {}
+    constructor {}
 }<!>
 
 annotation class Annotation1() <!ANNOTATION_CLASS_WITH_BODY!>{}<!>

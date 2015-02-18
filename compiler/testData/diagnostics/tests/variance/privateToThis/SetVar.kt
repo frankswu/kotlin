@@ -5,7 +5,7 @@ class Test<in I, out O> {
     private var i: I = getT()
     private val j: I
 
-    ;{
+    constructor {
         j = getT()
         i = getT()
         this.i = getT()

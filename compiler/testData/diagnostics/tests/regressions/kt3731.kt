@@ -7,7 +7,7 @@ class A {
 
 class B {
     class D {
-        {
+        constructor {
             A().bar {
                 this.foo()
                 foo()

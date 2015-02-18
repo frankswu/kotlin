@@ -112,7 +112,7 @@ val y = 10
 val z = 10
 
 class AnonymousInitializers(var a: String, val b: String) {
-    {
+    constructor {
         $a = "30"
         a = "s"
 
@@ -121,11 +121,11 @@ class AnonymousInitializers(var a: String, val b: String) {
     }
 
     val i: Int
-    {
+    constructor {
         $i = 121
     }
 
-    {
+    constructor {
         x = 11
         <!VAL_REASSIGNMENT!>z<!> = 10
     }
@@ -133,14 +133,14 @@ class AnonymousInitializers(var a: String, val b: String) {
     val j: Int
     get() = 20
 
-    {
+    constructor {
         <!VAL_REASSIGNMENT!>$i<!> = 13
         <!NO_BACKING_FIELD_CUSTOM_ACCESSORS!>$j<!> = 30
         <!VAL_REASSIGNMENT!>j<!> = 34
     }
 
     val k: String
-    {
+    constructor {
         if (1 < 3) {
             k = "a"
         }
@@ -150,7 +150,7 @@ class AnonymousInitializers(var a: String, val b: String) {
     }
 
     val l: String
-    {
+    constructor {
         if (1 < 3) {
             $l = "a"
         }
@@ -160,7 +160,7 @@ class AnonymousInitializers(var a: String, val b: String) {
     }
 
     <!MUST_BE_INITIALIZED_OR_BE_ABSTRACT!>val o: String<!>
-    {
+    constructor {
         if (1 < 3) {
             $o = "a"
         }
@@ -168,13 +168,13 @@ class AnonymousInitializers(var a: String, val b: String) {
 
     var m: Int = 30
 
-    {
+    constructor {
         $m = 400
     }
 
     val n: Int
 
-    {
+    constructor {
         while (<!UNINITIALIZED_VARIABLE!>n<!> == 0) {
         }
         $n = 10
@@ -183,7 +183,7 @@ class AnonymousInitializers(var a: String, val b: String) {
     }
 
     var p = 1
-    {
+    constructor {
         p++
     }
 }
@@ -197,7 +197,7 @@ open class Open(<!UNUSED_PARAMETER!>a<!>: Int, <!UNUSED_PARAMETER!>w<!>: Int) {}
 class LocalValsVsProperties(val a: Int, w: Int) : Open(a, w) {
     val x : Int
     <!MUST_BE_INITIALIZED_OR_BE_ABSTRACT!>val y : Int<!>
-    {
+    constructor {
         $x = 1
         val <!UNUSED_VARIABLE!>b<!> = x
     }
@@ -212,7 +212,7 @@ class LocalValsVsProperties(val a: Int, w: Int) : Open(a, w) {
     }
     var xx = w
     var yy : Int
-    {
+    constructor {
         <!VAL_REASSIGNMENT!>w<!> += 1
         $yy = w
     }
@@ -222,13 +222,13 @@ class Outer() {
     val a : Int
     var b : Int
 
-    {
+    constructor {
         $a = 1
         $b = 1
     }
 
     inner class Inner() {
-        {
+        constructor {
             <!VAL_REASSIGNMENT!>a<!>++
             b++
         }
@@ -250,7 +250,7 @@ class ClassObject() {
     class object {
         val x : Int
 
-        {
+        constructor {
             $x = 1
         }
 
@@ -267,7 +267,7 @@ fun foo() {
         val x : Int
         <!MUST_BE_INITIALIZED_OR_BE_ABSTRACT!>val y : Int<!>
         val z : Int
-        {
+        constructor {
             $x = 1
             $z = 3
         }
@@ -284,7 +284,7 @@ class TestObjectExpression() {
         val <!UNUSED_VARIABLE!>a<!> = object {
             val x : Int
             <!MUST_BE_INITIALIZED_OR_BE_ABSTRACT!>val y : Int<!>
-            {
+            constructor {
                 if (true)
                     x = 12
                 else
@@ -307,7 +307,7 @@ class TestObjectExpression() {
 object TestObjectDeclaration {
     val x : Int
     <!MUST_BE_INITIALIZED_OR_BE_ABSTRACT!>val y : Int<!>
-    {
+    constructor {
         $x = 1
     }
 
@@ -325,7 +325,7 @@ fun func() {
     val b = 1
     val <!UNUSED_VARIABLE!>a<!> = object {
         val x = b
-        {
+        constructor {
             <!VAL_REASSIGNMENT!>b<!> = 4
             <!UNRESOLVED_REFERENCE!>$b<!> = 3
         }

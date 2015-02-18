@@ -3,7 +3,7 @@
 class A(w: Int) {
     var c = w
 
-    {
+    constructor {
         c = 81
     }
 }

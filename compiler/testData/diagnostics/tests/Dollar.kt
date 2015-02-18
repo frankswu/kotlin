@@ -6,7 +6,7 @@ open class `$`() {
 }
 open class `$$`(`$$$$` : `$$$$$`?) : `$`() {
     val `$$$` : `$$$$$`?
-    {
+    constructor {
         $`$$$` = `$$$$`
     }
     open public fun `$$$$$$`() : `$$$$$`? {

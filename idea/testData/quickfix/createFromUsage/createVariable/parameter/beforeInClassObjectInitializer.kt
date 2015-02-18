@@ -6,7 +6,7 @@
 
 class A {
     class object {
-        {
+        constructor {
             val t: Int = <caret>foo
         }
     }

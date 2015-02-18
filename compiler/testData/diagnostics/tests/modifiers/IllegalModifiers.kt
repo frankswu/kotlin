@@ -69,15 +69,15 @@ abstract class IllegalModifiers5() {
 
 //Check illegal modifiers on anonymous initializers
 abstract class IllegalModifiers6() {
-    <!ILLEGAL_MODIFIER!>public<!> {}
-    <!ILLEGAL_MODIFIER!>private<!> {}
-    <!ILLEGAL_MODIFIER!>protected<!> {}
-    <!ILLEGAL_MODIFIER!>vararg<!> {}
-    <!ILLEGAL_MODIFIER!>abstract<!> {}
-    <!ILLEGAL_MODIFIER!>open<!> {}
-    <!ILLEGAL_MODIFIER!>final<!> {}
+    <!ILLEGAL_MODIFIER!>public<!> constructor {}
+    <!ILLEGAL_MODIFIER!>private<!> constructor {}
+    <!ILLEGAL_MODIFIER!>protected<!> constructor {}
+    <!ILLEGAL_MODIFIER!>vararg<!> constructor {}
+    <!ILLEGAL_MODIFIER!>abstract<!> constructor {}
+    <!ILLEGAL_MODIFIER!>open<!> constructor {}
+    <!ILLEGAL_MODIFIER!>final<!> constructor {}
 
-    <!ILLEGAL_MODIFIER!>public<!> annotated {}
+    <!ILLEGAL_MODIFIER!>public<!> annotated constructor {}
 
-    <!ILLEGAL_MODIFIER!>private<!> <!NOT_AN_ANNOTATION_CLASS!>IllegalModifiers6()<!> {}
+    <!ILLEGAL_MODIFIER!>private<!> <!NOT_AN_ANNOTATION_CLASS!>IllegalModifiers6()<!> constructor {}
 }

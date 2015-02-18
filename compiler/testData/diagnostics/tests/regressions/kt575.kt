@@ -11,7 +11,7 @@ class Creature() {
     object A {
         var bbb : Int
 
-        {
+        constructor {
             $bbb = 1
         }
     }
@@ -19,12 +19,12 @@ class Creature() {
     class C() {
         var ccc : Int
 
-        {
+        constructor {
             $ccc = 2
         }
     }
 
-    {
+    constructor {
         Creature.numCreated++ // Error
         A.bbb++
         C().ccc++

@@ -4,7 +4,7 @@ fun box(): String {
     var accessedFromConstructor: Class<*>? = null
 
     class MyClass() {
-        {
+        constructor {
             accessedFromConstructor = javaClass<MyClass>()
         }
     }

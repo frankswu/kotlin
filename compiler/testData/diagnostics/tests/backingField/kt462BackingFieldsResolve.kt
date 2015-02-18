@@ -5,23 +5,23 @@ package kt462
 
 abstract class TestInitializationWithoutBackingField() {
     val valWithBackingField : Int
-    {
+    constructor {
         valWithBackingField = 2
     }
 
     val valWithoutBackingField : Int
     get() = 42
-    {
+    constructor {
         <!VAL_REASSIGNMENT!>valWithoutBackingField<!> = 45
     }
 
     var finalDefaultVar : Int
-    {
+    constructor {
         finalDefaultVar = 3
     }
 
     open var openVar : Int
-    {
+    constructor {
         <!INITIALIZATION_USING_BACKING_FIELD_OPEN_SETTER!>openVar<!> = 4
     }
 
@@ -29,42 +29,42 @@ abstract class TestInitializationWithoutBackingField() {
     set(v: Int) {
         $varWithCustomSetter = v
     }
-    {
+    constructor {
         <!INITIALIZATION_USING_BACKING_FIELD_CUSTOM_SETTER!>varWithCustomSetter<!> = 3
     }
 
     var varWithoutBackingField : Int
     get() = 3
     set(v: Int) {}
-    {
+    constructor {
         varWithoutBackingField = 4
     }
 
     abstract var abstractVar : Int
-    {
+    constructor {
         abstractVar = 34
     }
 }
 
 abstract class TestInitializationThroughBackingField() {
     val valWithBackingField : Int
-    {
+    constructor {
         $valWithBackingField = 2
     }
 
     val valWithoutBackingField : Int
     get() = 42
-    {
+    constructor {
         <!NO_BACKING_FIELD_CUSTOM_ACCESSORS!>$valWithoutBackingField<!> = 45
     }
 
     var finalDefaultVar : Int
-    {
+    constructor {
         $finalDefaultVar = 3
     }
 
     open var openVar : Int
-    {
+    constructor {
         $openVar = 4
     }
 
@@ -72,26 +72,26 @@ abstract class TestInitializationThroughBackingField() {
     set(v: Int) {
         $varWithCustomSetter = v
     }
-    {
+    constructor {
         $varWithCustomSetter = 3
     }
 
     var varWithoutBackingField : Int
     get() = 3
     set(v: Int) {}
-    {
+    constructor {
         <!NO_BACKING_FIELD_CUSTOM_ACCESSORS!>$varWithoutBackingField<!> = 4
     }
 
     abstract var abstractVar : Int
-    {
+    constructor {
         <!NO_BACKING_FIELD_ABSTRACT_PROPERTY!>$abstractVar<!> = 34
     }
 }
 
 class TestBackingFieldsVisibility() {
     var a : Int = 712
-    {
+    constructor {
         $a = 37
         this.$a = 357
     }
@@ -122,7 +122,7 @@ val topLevelVar = 11
 class T() {
     val z : Int get() = 42
 
-    {
+    constructor {
         <!NO_BACKING_FIELD_CUSTOM_ACCESSORS!>this.$z<!> = 34
     }
 
@@ -132,7 +132,7 @@ class T() {
 
     val a =  object {
         val x = <!NO_BACKING_FIELD_CUSTOM_ACCESSORS!>$z<!>
-        {
+        constructor {
             <!NO_BACKING_FIELD_CUSTOM_ACCESSORS!>$z<!> = 23
         }
     }
@@ -140,7 +140,7 @@ class T() {
     var x: Int = 2
     get() {
         val <!UNUSED_VARIABLE!>o<!> = object {
-            {
+            constructor {
                 $x = 34
             }
             fun foo() {
@@ -164,7 +164,7 @@ class T() {
         $x = 34
         val <!UNUSED_VARIABLE!>o<!> = object {
             val y = $x
-            {
+            constructor {
                 $x = 422
             }
         }

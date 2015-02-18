@@ -7,7 +7,7 @@ class A {
 }
 
 class B() {
-    {
+    constructor {
         A().<!INVISIBLE_MEMBER!>a<!> = "Hello"
     }
 }

@@ -474,6 +474,10 @@ public class BodyResolver {
     ) {
         if (!c.completeAnalysisNeeded(anonymousInitializer)) return;
 
+        if (!anonymousInitializer.hasConstructorKeyword()) {
+            trace.report(EXPECTED_CONSTRUCTOR_KEYWORD_BEFORE_CLASS_INITIALIZER.on(anonymousInitializer));
+        }
+
         JetScope scopeForInitializers = classDescriptor.getScopeForInitializerResolution();
         if (!classDescriptor.getConstructors().isEmpty()) {
             expressionTypingServices.getType(scopeForInitializers, anonymousInitializer.getBody(), NO_EXPECTED_TYPE, c.getOuterDataFlowInfo(), trace);
