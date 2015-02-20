@@ -2509,6 +2509,7 @@ public class BlackBoxWithStdlibCodegenTestGenerated extends AbstractBlackBoxCode
             Reflection.GenericSignature.class,
             Reflection.Mapping.class,
             Reflection.MethodsFromAny.class,
+            Reflection.Properties.class,
     })
     @RunWith(JUnit3RunnerWithInners.class)
     public static class Reflection extends AbstractBlackBoxCodegenTest {
@@ -2758,6 +2759,27 @@ public class BlackBoxWithStdlibCodegenTestGenerated extends AbstractBlackBoxCode
             @TestMetadata("propertyToString.kt")
             public void testPropertyToString() throws Exception {
                 String fileName = JetTestUtils.navigationMetadata("compiler/testData/codegen/boxWithStdlib/reflection/methodsFromAny/propertyToString.kt");
+                doTestWithStdlib(fileName);
+            }
+        }
+
+        @TestMetadata("compiler/testData/codegen/boxWithStdlib/reflection/properties")
+        @TestDataPath("$PROJECT_ROOT")
+        @RunWith(JUnit3RunnerWithInners.class)
+        public static class Properties extends AbstractBlackBoxCodegenTest {
+            public void testAllFilesPresentInProperties() throws Exception {
+                JetTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("compiler/testData/codegen/boxWithStdlib/reflection/properties"), Pattern.compile("^(.+)\\.kt$"), true);
+            }
+
+            @TestMetadata("getPropertiesMutableVsReadonly.kt")
+            public void testGetPropertiesMutableVsReadonly() throws Exception {
+                String fileName = JetTestUtils.navigationMetadata("compiler/testData/codegen/boxWithStdlib/reflection/properties/getPropertiesMutableVsReadonly.kt");
+                doTestWithStdlib(fileName);
+            }
+
+            @TestMetadata("simpleGetProperties.kt")
+            public void testSimpleGetProperties() throws Exception {
+                String fileName = JetTestUtils.navigationMetadata("compiler/testData/codegen/boxWithStdlib/reflection/properties/simpleGetProperties.kt");
                 doTestWithStdlib(fileName);
             }
         }
