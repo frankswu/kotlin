@@ -16,14 +16,15 @@
 
 package org.jetbrains.kotlin.load.kotlin.reflect
 
+import org.jetbrains.kotlin.load.java.structure.reflect.classId
+import org.jetbrains.kotlin.load.java.structure.reflect.desc
 import org.jetbrains.kotlin.load.kotlin.KotlinJvmBinaryClass
 import org.jetbrains.kotlin.load.kotlin.header.KotlinClassHeader
-import org.jetbrains.kotlin.load.java.structure.reflect.classId
 import org.jetbrains.kotlin.load.kotlin.header.ReadKotlinClassHeaderAnnotationVisitor
 import org.jetbrains.kotlin.name.Name
-import java.lang.reflect.Method
-import java.lang.reflect.Field
 import java.lang.reflect.Constructor
+import java.lang.reflect.Field
+import java.lang.reflect.Method
 
 suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 private val TYPES_ELIGIBLE_FOR_SIMPLE_VISIT = setOf(
@@ -199,13 +200,7 @@ private object SignatureSerializer {
         return typeDesc(field.getType())
     }
 
-    suppress("UNCHECKED_CAST")
     fun typeDesc(clazz: Class<*>): String {
-        if (clazz == Void.TYPE) return "V";
-        // This is a clever exploitation of a format returned by Class.getName(): for arrays, it's almost an internal name,
-        // but with '.' instead of '/'
-        // TODO: ensure there are tests on arrays of nested classes, multi-dimensional arrays, etc.
-        val arrayClass = java.lang.reflect.Array.newInstance(clazz as Class<Any>, 0).javaClass
-        return arrayClass.getName().substring(1).replace('.', '/')
+        return clazz.desc
     }
 }

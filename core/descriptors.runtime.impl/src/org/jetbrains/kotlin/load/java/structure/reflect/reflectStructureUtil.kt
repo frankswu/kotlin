@@ -16,13 +16,13 @@
 
 package org.jetbrains.kotlin.load.java.structure.reflect
 
-import java.lang.reflect.Modifier
-import org.jetbrains.kotlin.descriptors.Visibility
 import org.jetbrains.kotlin.descriptors.Visibilities
+import org.jetbrains.kotlin.descriptors.Visibility
 import org.jetbrains.kotlin.load.java.JavaVisibilities
 import org.jetbrains.kotlin.name.ClassId
-import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
+import java.lang.reflect.Modifier
 
 private fun calculateVisibility(modifiers: Int): Visibility {
     return when {
@@ -55,8 +55,19 @@ public val Class<*>.fqName: FqName
         return getDeclaringClass()?.fqName?.child(Name.identifier(getSimpleName())) ?: FqName(getName())
     }
 
-val Class<*>.classId: ClassId
+public val Class<*>.classId: ClassId
     get() {
         if (getEnclosingMethod() != null || getEnclosingConstructor() != null) return ClassId.topLevel(FqName(getName()))
         return getDeclaringClass()?.classId?.createNestedClassId(Name.identifier(getSimpleName())) ?: ClassId.topLevel(FqName(getName()))
+    }
+
+public val Class<*>.desc: String
+    get() {
+        if (this == Void.TYPE) return "V";
+        // This is a clever exploitation of a format returned by Class.getName(): for arrays, it's almost an internal name,
+        // but with '.' instead of '/'
+        // TODO: ensure there are tests on arrays of nested classes, multi-dimensional arrays, etc.
+        [suppress("UNCHECKED_CAST")]
+        val arrayClass = java.lang.reflect.Array.newInstance(this as Class<Any>, 0).javaClass
+        return arrayClass.getName().substring(1).replace('.', '/')
     }

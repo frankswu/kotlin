@@ -16,13 +16,11 @@
 
 package kotlin.reflect.jvm.internal
 
-import kotlin.jvm.internal.KotlinPackage
-import kotlin.reflect.*
 import org.jetbrains.kotlin.descriptors.PackageViewDescriptor
 import org.jetbrains.kotlin.load.java.structure.reflect.classId
-import org.jetbrains.kotlin.name.Name
-import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.resolve.scopes.JetScope
+import kotlin.jvm.internal.KotlinPackage
+import kotlin.reflect.*
 
 class KPackageImpl(override val jClass: Class<*>) : KCallableContainerImpl(), KPackage {
     val descriptor by ReflectProperties.lazySoft {(): PackageViewDescriptor ->
@@ -48,11 +46,13 @@ class KPackageImpl(override val jClass: Class<*>) : KCallableContainerImpl(), KP
     }
 
     fun <T> topLevelExtensionProperty(name: String, receiver: Class<T>): KTopLevelExtensionProperty<T, *> {
-        return KTopLevelExtensionPropertyImpl(name, this, receiver)
+        val descriptor = findPropertyDescriptor(name, receiver)
+        return KTopLevelExtensionPropertyImpl(this, descriptor)
     }
 
     fun <T> mutableTopLevelExtensionProperty(name: String, receiver: Class<T>): KMutableTopLevelExtensionProperty<T, *> {
-        return KMutableTopLevelExtensionPropertyImpl(name, this, receiver)
+        val descriptor = findPropertyDescriptor(name, receiver)
+        return KMutableTopLevelExtensionPropertyImpl(this, descriptor)
     }
 
     override fun equals(other: Any?): Boolean =
