@@ -42,6 +42,7 @@ import org.jetbrains.kotlin.resolve.BindingContext;
 import org.jetbrains.kotlin.resolve.DescriptorToSourceUtils;
 import org.jetbrains.kotlin.resolve.DescriptorUtils;
 import org.jetbrains.kotlin.resolve.InlineDescriptorUtils;
+import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall;
 import org.jetbrains.kotlin.serialization.deserialization.descriptors.DeserializedCallableMemberDescriptor;
 import org.jetbrains.kotlin.types.JetType;
 
@@ -235,5 +236,23 @@ public class JvmCodegenUtil {
         return declaration instanceof JetFunctionLiteral &&
                declaration.getParent() instanceof JetFunctionLiteralExpression &&
                InlineDescriptorUtils.isInlineLambda((JetFunctionLiteralExpression) declaration.getParent(), bindingContext, false);
+    }
+
+    @NotNull
+    public static ResolvedCall<ConstructorDescriptor> getDelegationConstructorCallWithAssert(
+            @NotNull BindingContext bindingContext,
+            @NotNull ConstructorDescriptor constructorDescriptor
+    ) {
+        ResolvedCall<ConstructorDescriptor> call = getDelegationConstructorCall(bindingContext, constructorDescriptor);
+        assert call != null : "This should not be called unless constructor delegation call is resolved";
+        return call;
+    }
+
+    @Nullable
+    public static ResolvedCall<ConstructorDescriptor> getDelegationConstructorCall(
+            @NotNull BindingContext bindingContext,
+            @NotNull ConstructorDescriptor constructorDescriptor
+    ) {
+        return bindingContext.get(BindingContext.CONSTRUCTOR_RESOLVED_DELEGATION_CALL, constructorDescriptor);
     }
 }

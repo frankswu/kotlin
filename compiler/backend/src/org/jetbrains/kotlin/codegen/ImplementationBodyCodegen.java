@@ -52,6 +52,7 @@ import org.jetbrains.kotlin.resolve.calls.model.DefaultValueArgument;
 import org.jetbrains.kotlin.resolve.calls.model.ExpressionValueArgument;
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall;
 import org.jetbrains.kotlin.resolve.calls.model.VarargValueArgument;
+import org.jetbrains.kotlin.resolve.descriptorUtil.DescriptorUtilPackage;
 import org.jetbrains.kotlin.resolve.jvm.diagnostics.JvmDeclarationOrigin;
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmClassSignature;
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodParameterKind;
@@ -85,7 +86,8 @@ import static org.jetbrains.org.objectweb.asm.Opcodes.*;
 
 public class ImplementationBodyCodegen extends ClassBodyCodegen {
     private static final String ENUM_VALUES_FIELD_NAME = "$VALUES";
-    private JetDelegatorToSuperCall superCall;
+    @Nullable
+    private final ClassDescriptor superClassNotAny = DescriptorUtilPackage.getSuperClassNotAny(descriptor);
     private Type superClassAsmType;
     @Nullable // null means java/lang/Object
     private JetType superClassType;
@@ -346,7 +348,6 @@ public class ImplementationBodyCodegen extends ClassBodyCodegen {
                 if (!isInterface(superClassDescriptor)) {
                     superClassType = superType;
                     superClassAsmType = typeMapper.mapClass(superClassDescriptor);
-                    superCall = (JetDelegatorToSuperCall) specifier;
                 }
             }
         }
@@ -1106,12 +1107,7 @@ public class ImplementationBodyCodegen extends ClassBodyCodegen {
             }
         }
 
-        if (superCall == null) {
-            genSimpleSuperCall(iv);
-        }
-        else {
-            generateDelegatorToConstructorCall(iv, codegen, constructorDescriptor);
-        }
+        generateDelegatorToConstructorCall(iv, codegen, constructorDescriptor);
 
         if (isObject(descriptor)) {
             StackValue.singleton(descriptor, typeMapper).store(StackValue.LOCAL_0, iv);
@@ -1318,15 +1314,16 @@ public class ImplementationBodyCodegen extends ClassBodyCodegen {
             }
         }
 
-        if (superCall != null) {
-            ResolvedCall<?> resolvedCall = CallUtilPackage.getResolvedCallWithAssert(superCall, bindingContext);
-            ClassDescriptor superClass = ((ConstructorDescriptor) resolvedCall.getResultingDescriptor()).getContainingDeclaration();
+        if (superClassNotAny != null) {
+            ClassDescriptor superClass = superClassNotAny;
             if (superClass.isInner()) {
                 constructorContext.lookupInContext(superClass.getContainingDeclaration(), StackValue.LOCAL_0, state, true);
             }
 
             if (!isAnonymousObject(descriptor)) {
-                JetValueArgumentList argumentList = superCall.getValueArgumentList();
+                ResolvedCall<ConstructorDescriptor> delegationCall =
+                        getDelegationConstructorCall(bindingContext, descriptor.getUnsubstitutedPrimaryConstructor());
+                JetValueArgumentList argumentList = delegationCall != null ? delegationCall.getCall().getValueArgumentList() : null;
                 if (argumentList != null) {
                     argumentList.accept(visitor);
                 }
@@ -1408,9 +1405,12 @@ public class ImplementationBodyCodegen extends ClassBodyCodegen {
             @NotNull ExpressionCodegen codegen,
             @NotNull ConstructorDescriptor constructorDescriptor
     ) {
+        ResolvedCall<?> resolvedCall = getDelegationConstructorCall(bindingContext, constructorDescriptor);
+        if (resolvedCall == null) {
+            genSimpleSuperCall(iv);
+            return;
+        }
         iv.load(0, OBJECT_TYPE);
-
-        ResolvedCall<?> resolvedCall = CallUtilPackage.getResolvedCallWithAssert(superCall, bindingContext);
         ConstructorDescriptor superConstructor = (ConstructorDescriptor) resolvedCall.getResultingDescriptor();
 
         CallableMethod superCallable = typeMapper.mapToCallableMethod(superConstructor);
