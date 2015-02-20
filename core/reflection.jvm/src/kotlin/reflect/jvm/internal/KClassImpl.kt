@@ -20,17 +20,10 @@ import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.load.java.structure.reflect.classId
 import org.jetbrains.kotlin.resolve.scopes.JetScope
 import org.jetbrains.kotlin.serialization.deserialization.findClassAcrossModuleDependencies
-import kotlin.jvm.internal.KotlinClass
 import kotlin.reflect.KClass
 import kotlin.reflect.KMemberProperty
 import kotlin.reflect.KMutableMemberProperty
 import kotlin.reflect.KotlinReflectionInternalError
-
-enum class KClassOrigin {
-    BUILT_IN
-    KOTLIN
-    FOREIGN
-}
 
 class KClassImpl<T>(override val jClass: Class<T>) : KCallableContainerImpl(), KClass<T> {
     // Don't use kotlin.properties.Delegates here because it's a Kotlin class which will invoke KClassImpl() in <clinit>,
@@ -50,36 +43,14 @@ class KClassImpl<T>(override val jClass: Class<T>) : KCallableContainerImpl(), K
     // TODO: type arguments?
     override val scope: JetScope get() = descriptor.getDefaultType().getMemberScope()
 
-    private val origin by ReflectProperties.lazy {(): KClassOrigin ->
-        if (jClass.isAnnotationPresent(javaClass<KotlinClass>())) {
-            KClassOrigin.KOTLIN
-        }
-        else {
-            KClassOrigin.FOREIGN
-            // TODO: built-in classes
-        }
-    }
-
     fun memberProperty(name: String): KMemberProperty<T, *> {
         val computeDescriptor = findPropertyDescriptor(name)
-
-        if (origin === KClassOrigin.KOTLIN) {
-            return KMemberPropertyImpl<T, Any>(this, computeDescriptor)
-        }
-        else {
-            return KForeignMemberProperty<T, Any>(name, this)
-        }
+        return KMemberPropertyImpl<T, Any>(this, computeDescriptor)
     }
 
     fun mutableMemberProperty(name: String): KMutableMemberProperty<T, *> {
         val computeDescriptor = findPropertyDescriptor(name)
-
-        if (origin === KClassOrigin.KOTLIN) {
-            return KMutableMemberPropertyImpl<T, Any>(this, computeDescriptor)
-        }
-        else {
-            return KMutableForeignMemberProperty<T, Any>(name, this)
-        }
+        return KMutableMemberPropertyImpl<T, Any>(this, computeDescriptor)
     }
 
     override fun equals(other: Any?): Boolean =
