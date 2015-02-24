@@ -374,6 +374,7 @@ public class ImplementationBodyCodegen extends ClassBodyCodegen {
 
         DelegationFieldsInfo delegationFieldsInfo = getDelegationFieldsInfo(myClass.getDelegationSpecifiers());
         try {
+            lookupConstructorExpressionsInClosureIfPresent();
             generatePrimaryConstructor(delegationFieldsInfo);
         }
         catch (CompilationException e) {
@@ -1067,10 +1068,6 @@ public class ImplementationBodyCodegen extends ClassBodyCodegen {
 
         ConstructorContext constructorContext = context.intoConstructor(constructorDescriptor);
 
-        if (state.getClassBuilderMode() == ClassBuilderMode.FULL) {
-            lookupConstructorExpressionsInClosureIfPresent(constructorContext);
-        }
-
         functionCodegen.generateMethod(OtherOrigin(myClass, constructorDescriptor), constructorDescriptor, constructorContext,
                    new FunctionGenerationStrategy.CodegenBased<ConstructorDescriptor>(state, constructorDescriptor) {
                        @Override
@@ -1247,7 +1244,9 @@ public class ImplementationBodyCodegen extends ClassBodyCodegen {
         }
     }
 
-    private void lookupConstructorExpressionsInClosureIfPresent(final ConstructorContext constructorContext) {
+    private void lookupConstructorExpressionsInClosureIfPresent() {
+        if (state.getClassBuilderMode() != ClassBuilderMode.FULL || descriptor.getConstructors().isEmpty()) return;
+
         JetVisitorVoid visitor = new JetVisitorVoid() {
             @Override
             public void visitJetElement(@NotNull JetElement e) {
@@ -1266,15 +1265,16 @@ public class ImplementationBodyCodegen extends ClassBodyCodegen {
                     toLookup = descriptor.getContainingDeclaration();
                 }
                 else if (descriptor instanceof VariableDescriptor) {
-                    ConstructorDescriptor constructorDescriptor = (ConstructorDescriptor) constructorContext.getContextDescriptor();
-                    for (ValueParameterDescriptor parameterDescriptor : constructorDescriptor.getValueParameters()) {
-                        if (descriptor.equals(parameterDescriptor)) return;
+                    if (descriptor.getContainingDeclaration() instanceof ConstructorDescriptor) {
+                        ClassDescriptor classDescriptor =
+                                (ClassDescriptor) descriptor.getContainingDeclaration().getContainingDeclaration();
+                        if (classDescriptor == ImplementationBodyCodegen.this.descriptor) return;
                     }
                     toLookup = descriptor;
                 }
                 else return;
 
-                constructorContext.lookupInContext(toLookup, StackValue.LOCAL_0, state, true);
+                context.lookupInContext(toLookup, StackValue.LOCAL_0, state, true);
             }
 
             @Override
@@ -1287,7 +1287,10 @@ public class ImplementationBodyCodegen extends ClassBodyCodegen {
                 }
 
                 if (descriptor instanceof CallableDescriptor) {
-                    constructorContext.generateReceiver((CallableDescriptor) descriptor, state, true);
+                    ReceiverParameterDescriptor parameter = ((CallableDescriptor) descriptor).getExtensionReceiverParameter();
+                    if (parameter != null) {
+                        context.lookupInContext(parameter, StackValue.LOCAL_0, state, true);
+                    }
                 }
             }
         };
@@ -1317,7 +1320,7 @@ public class ImplementationBodyCodegen extends ClassBodyCodegen {
         if (superClassNotAny != null) {
             ClassDescriptor superClass = superClassNotAny;
             if (superClass.isInner()) {
-                constructorContext.lookupInContext(superClass.getContainingDeclaration(), StackValue.LOCAL_0, state, true);
+                context.lookupInContext(superClass.getContainingDeclaration(), StackValue.LOCAL_0, state, true);
             }
 
             if (!isAnonymousObject(descriptor)) {
