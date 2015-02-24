@@ -29,6 +29,8 @@ public final class EnclosedValueDescriptor {
     private final StackValue.StackValueWithSimpleReceiver innerValue;
     private final Type type;
 
+    private int parameterOffsetInConstructor = -1;
+
     public EnclosedValueDescriptor(
             @NotNull String fieldName,
             @Nullable DeclarationDescriptor descriptor,
@@ -70,6 +72,14 @@ public final class EnclosedValueDescriptor {
         }
 
         throw new IllegalStateException("Can't get outer value in " + codegen + " for " + this);
+    }
+
+    public int getParameterOffsetInConstructor() {
+        return parameterOffsetInConstructor;
+    }
+
+    public void setParameterOffsetInConstructor(int parameterOffsetInConstructor) {
+        this.parameterOffsetInConstructor = parameterOffsetInConstructor;
     }
 
     @Override

@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.codegen.context.EnclosedValueDescriptor;
 import org.jetbrains.kotlin.descriptors.*;
-import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall;
 import org.jetbrains.kotlin.types.JetType;
 import org.jetbrains.org.objectweb.asm.Type;
 
@@ -112,6 +111,10 @@ public final class MutableClosure implements CalculatedClosure {
             captureVariables = new LinkedHashMap<DeclarationDescriptor, EnclosedValueDescriptor>();
         }
         captureVariables.put(value.getDescriptor(), value);
+    }
+
+    public void setCapturedParameterOffsetInConstructor(DeclarationDescriptor descriptor, int offset) {
+        captureVariables.get(descriptor).setParameterOffsetInConstructor(offset);
     }
 
     @Nullable

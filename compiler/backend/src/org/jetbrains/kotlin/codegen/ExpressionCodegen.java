@@ -1951,9 +1951,28 @@ public class ExpressionCodegen extends JetVisitor<StackValue, StackValue> implem
             return stackValueForLocal(descriptor, index);
         }
 
+        if (context instanceof ConstructorContext) {
+            return lookupCapturedValueInConstructorParameters(descriptor);
+        }
+
         return context.lookupInContext(descriptor, StackValue.LOCAL_0, state, false);
     }
 
+    @Nullable
+    private StackValue lookupCapturedValueInConstructorParameters(@NotNull DeclarationDescriptor descriptor) {
+        StackValue parentResult = context.lookupInContext(descriptor, StackValue.LOCAL_0, state, false);
+        if (context.closure == null || parentResult == null) return parentResult;
+        EnclosedValueDescriptor enclosedValueDescriptor = context.closure.getCaptureVariables().get(descriptor);
+        if (enclosedValueDescriptor == null || enclosedValueDescriptor.getParameterOffsetInConstructor() == -1) return parentResult;
+        assert parentResult instanceof StackValue.Field || parentResult instanceof StackValue.FieldForSharedVar
+                : "Part of closure should be either Field or FieldForSharedVar";
+
+        if (parentResult instanceof StackValue.FieldForSharedVar) {
+            return StackValue.shared(enclosedValueDescriptor.getParameterOffsetInConstructor(), parentResult.type);
+        }
+
+        return StackValue.local(enclosedValueDescriptor.getParameterOffsetInConstructor(), parentResult.type);
+    }
 
     private StackValue stackValueForLocal(DeclarationDescriptor descriptor, int index) {
         if (descriptor instanceof VariableDescriptor) {
