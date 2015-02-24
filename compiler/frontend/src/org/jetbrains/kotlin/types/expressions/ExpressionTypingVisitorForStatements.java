@@ -60,7 +60,7 @@ public class ExpressionTypingVisitorForStatements extends ExpressionTypingVisito
     private final BasicExpressionTypingVisitor basic;
     private final ControlStructureTypingVisitor controlStructures;
     private final PatternMatchingTypingVisitor patterns;
-    private final ClosureExpressionsTypingVisitor closures;
+    private final FunctionsTypingVisitor closures;
 
     public ExpressionTypingVisitorForStatements(
             @NotNull ExpressionTypingInternals facade,
@@ -68,7 +68,7 @@ public class ExpressionTypingVisitorForStatements extends ExpressionTypingVisito
             @NotNull BasicExpressionTypingVisitor basic,
             @NotNull ControlStructureTypingVisitor controlStructures,
             @NotNull PatternMatchingTypingVisitor patterns,
-            @NotNull ClosureExpressionsTypingVisitor closures
+            @NotNull FunctionsTypingVisitor closures
     ) {
         super(facade);
         this.scope = scope;

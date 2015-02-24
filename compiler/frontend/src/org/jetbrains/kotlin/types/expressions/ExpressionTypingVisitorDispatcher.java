@@ -51,7 +51,7 @@ public class ExpressionTypingVisitorDispatcher extends JetVisitor<JetTypeInfo, E
     private final ExpressionTypingComponents components;
     private final BasicExpressionTypingVisitor basic;
     private final ExpressionTypingVisitorForStatements statements;
-    private final ClosureExpressionsTypingVisitor closures;
+    private final FunctionsTypingVisitor closures;
     private final ControlStructureTypingVisitor controlStructures;
     private final PatternMatchingTypingVisitor patterns;
 
@@ -60,7 +60,7 @@ public class ExpressionTypingVisitorDispatcher extends JetVisitor<JetTypeInfo, E
         basic = new BasicExpressionTypingVisitor(this);
         controlStructures = new ControlStructureTypingVisitor(this);
         patterns = new PatternMatchingTypingVisitor(this);
-        closures = new ClosureExpressionsTypingVisitor(this);
+        closures = new FunctionsTypingVisitor(this);
         if (writableScope != null) {
             this.statements = new ExpressionTypingVisitorForStatements(this, writableScope, basic, controlStructures, patterns, closures);
         }
