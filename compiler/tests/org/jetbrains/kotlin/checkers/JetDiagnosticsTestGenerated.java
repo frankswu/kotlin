@@ -819,6 +819,12 @@ public class JetDiagnosticsTestGenerated extends AbstractJetDiagnosticsTest {
                 doTest(fileName);
             }
 
+            @TestMetadata("typeParameterAsAnnotation.kt")
+            public void testTypeParameterAsAnnotation() throws Exception {
+                String fileName = JetTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/annotations/typeParameterAsAnnotation.kt");
+                doTest(fileName);
+            }
+
             @TestMetadata("UnresolvedAnnotationOnObject.kt")
             public void testUnresolvedAnnotationOnObject() throws Exception {
                 String fileName = JetTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/annotations/UnresolvedAnnotationOnObject.kt");
@@ -8920,6 +8926,12 @@ public class JetDiagnosticsTestGenerated extends AbstractJetDiagnosticsTest {
                 @TestMetadata("invoke.kt")
                 public void testInvoke() throws Exception {
                     String fileName = JetTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/platformTypes/nullabilityWarnings/invoke.kt");
+                    doTest(fileName);
+                }
+
+                @TestMetadata("kt6829.kt")
+                public void testKt6829() throws Exception {
+                    String fileName = JetTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/platformTypes/nullabilityWarnings/kt6829.kt");
                     doTest(fileName);
                 }
 
