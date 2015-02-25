@@ -10343,6 +10343,12 @@ public class JetDiagnosticsTestGenerated extends AbstractJetDiagnosticsTest {
                 doTest(fileName);
             }
 
+            @TestMetadata("enums.kt")
+            public void testEnums() throws Exception {
+                String fileName = JetTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/secondaryConstructors/enums.kt");
+                doTest(fileName);
+            }
+
             @TestMetadata("expectedConstructorKeywordOnInitializer.kt")
             public void testExpectedConstructorKeywordOnInitializer() throws Exception {
                 String fileName = JetTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/secondaryConstructors/expectedConstructorKeywordOnInitializer.kt");

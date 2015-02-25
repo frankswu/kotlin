@@ -27,4 +27,8 @@ public class JetConstructorDelegationReferenceExpression extends JetExpressionIm
     public boolean isThis() {
         return "this".equals(getText());
     }
+
+    public boolean isEmpty() {
+        return getText() == null || getText().isEmpty();
+    }
 }

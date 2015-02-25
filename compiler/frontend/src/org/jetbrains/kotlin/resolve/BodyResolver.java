@@ -173,6 +173,10 @@ public class BodyResolver {
         JetConstructorDelegationCall call = constructor.getDelegationCall();
         if (call == null || call.getCalleeExpression() == null) return;
 
+        if (descriptor.getContainingDeclaration().getKind() == ClassKind.ENUM_CLASS && call.getCalleeExpression().isEmpty()) {
+            return;
+        }
+
         OverloadResolutionResults<?> results = callResolver.resolveFunctionCall(
                 trace, scope,
                 CallMaker.makeCall(ReceiverValue.NO_RECEIVER, null, call),
