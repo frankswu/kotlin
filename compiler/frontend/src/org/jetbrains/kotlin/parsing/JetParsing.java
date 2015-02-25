@@ -689,7 +689,7 @@ public class JetParsing extends AbstractJetParsing {
             createTruncatedBuilder(lastId).parseModifierList(MODIFIER_LIST, enumDetector, REGULAR_ANNOTATIONS_ONLY_WITH_BRACKETS);
 
             IElementType type;
-            if (at(IDENTIFIER)) {
+            if (!at(CONSTRUCTOR_KEYWORD) && at(IDENTIFIER)) {
                 parseEnumEntry();
                 type = ENUM_ENTRY;
             }

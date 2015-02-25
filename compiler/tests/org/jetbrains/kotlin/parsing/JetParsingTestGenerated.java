@@ -1747,6 +1747,12 @@ public class JetParsingTestGenerated extends AbstractJetParsingTest {
                 doParsingTest(fileName);
             }
 
+            @TestMetadata("enumParsing.kt")
+            public void testEnumParsing() throws Exception {
+                String fileName = JetTestUtils.navigationMetadata("compiler/testData/psi/secondaryConstructors/enumParsing.kt");
+                doParsingTest(fileName);
+            }
+
             @TestMetadata("recoveryEmptyDelegationType.kt")
             public void testRecoveryEmptyDelegationType() throws Exception {
                 String fileName = JetTestUtils.navigationMetadata("compiler/testData/psi/secondaryConstructors/recoveryEmptyDelegationType.kt");
