@@ -16,7 +16,7 @@
 
 package kotlin.js
 
-object IntDefaultObjectImpl : IntDefaultObject, Parsable<Int> {
+object IntDefaultObjectImpl : Parsable<Int> {
     // TODO: Should behaviour be same to JVM function
     override fun parse(str: String) = parseInt(str)
 }
@@ -33,7 +33,7 @@ private val NaN_Double : Double = noImpl
 library
 private fun parseDouble(s: String) : Double = noImpl
 
-object DoubleDefaultObjectImpl : DoubleDefaultObject, Parsable<Double> {
+object DoubleDefaultObjectImpl : Parsable<Double> {
     val POSITIVE_INFINITY : Double = POSITIVE_INFINITY_Double
     val NEGATIVE_INFINITY : Double = NEGATIVE_INFINITY_Double
     val NaN : Double = NaN_Double

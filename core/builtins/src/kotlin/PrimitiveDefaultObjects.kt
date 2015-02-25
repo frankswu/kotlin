@@ -19,6 +19,3 @@ package kotlin
 public trait Parsable<T> {
     fun parse(str: String): T
 }
-
-public trait DoubleDefaultObject
-public trait IntDefaultObject

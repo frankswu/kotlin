@@ -293,7 +293,7 @@ public class JetTypeMapper {
             return Type.getType("[" + boxType(mapType(memberType, kind)).getDescriptor());
         }
 
-        if (descriptor instanceof ClassDescriptor && ((ClassDescriptor) descriptor).getKind() == ClassKind.CLASS_OBJECT) {
+        if (DescriptorUtils.isClassObject(descriptor)) {
             DeclarationDescriptor containingDeclaration = descriptor.getContainingDeclaration();
             if (containingDeclaration instanceof ClassDescriptor &&
                 KotlinBuiltIns.isPrimitiveType(((ClassDescriptor) containingDeclaration).getDefaultType())) {
@@ -302,7 +302,12 @@ public class JetTypeMapper {
                 Name name = Name.identifier(containingDeclaration.getName().asString() + "DefaultObjectImpl");
                 FqName fqName = new FqName("kotlin.jvm").child(name);
 
-                return AsmUtil.asmTypeByFqNameWithoutInnerClasses(fqName);
+                Type asmType = AsmUtil.asmTypeByFqNameWithoutInnerClasses(fqName);
+                if (signatureVisitor != null) {
+                    signatureVisitor.writeAsmType(asmType);
+                }
+
+                return asmType;
             }
         }
 

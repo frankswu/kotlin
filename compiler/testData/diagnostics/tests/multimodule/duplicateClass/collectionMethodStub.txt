@@ -112,10 +112,6 @@ package kotlin {
         // -- Module: <built-ins lazy module> --
     }
 
-    public trait DoubleDefaultObject {
-        // -- Module: <built-ins lazy module> --
-    }
-
     public abstract class DoubleIterator : kotlin.Iterator<kotlin.Double> {
         // -- Module: <built-ins lazy module> --
     }
@@ -363,10 +359,6 @@ package kotlin {
     }
 
     public final class IntArray : kotlin.Cloneable {
-        // -- Module: <built-ins lazy module> --
-    }
-
-    public trait IntDefaultObject {
         // -- Module: <built-ins lazy module> --
     }
 

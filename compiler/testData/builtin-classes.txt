@@ -376,8 +376,8 @@ public final class Double : kotlin.Number, kotlin.Comparable<kotlin.Double> {
     public open override /*1*/ fun toLong(): kotlin.Long
     public open override /*1*/ fun toShort(): kotlin.Short
 
-    public class object <class-object-for-Double> : kotlin.DoubleDefaultObject, kotlin.Parsable<kotlin.Double> {
-        /*primary*/ private constructor <class-object-for-Double>()
+    public class object Default : kotlin.Parsable<kotlin.Double> {
+        /*primary*/ private constructor Default()
         internal final val NEGATIVE_INFINITY: kotlin.Double
             internal final fun <get-NEGATIVE_INFINITY>(): kotlin.Double
         internal final val NaN: kotlin.Double
@@ -395,9 +395,6 @@ public final class DoubleArray : kotlin.Cloneable {
     public final fun iterator(): kotlin.DoubleIterator
     public final fun set(/*0*/ index: kotlin.Int, /*1*/ value: kotlin.Double): kotlin.Unit
     public final fun size(): kotlin.Int
-}
-
-public trait DoubleDefaultObject {
 }
 
 public abstract class DoubleIterator : kotlin.Iterator<kotlin.Double> {
@@ -888,8 +885,8 @@ public final class Int : kotlin.Number, kotlin.Comparable<kotlin.Int> {
     public final fun ushr(/*0*/ bits: kotlin.Int): kotlin.Int
     public final fun xor(/*0*/ other: kotlin.Int): kotlin.Int
 
-    public class object <class-object-for-Int> : kotlin.IntDefaultObject, kotlin.Parsable<kotlin.Int> {
-        /*primary*/ private constructor <class-object-for-Int>()
+    public class object Default : kotlin.Parsable<kotlin.Int> {
+        /*primary*/ private constructor Default()
         internal abstract override /*1*/ /*fake_override*/ fun parse(/*0*/ str: kotlin.String): kotlin.Int
     }
 }
@@ -901,9 +898,6 @@ public final class IntArray : kotlin.Cloneable {
     public final fun iterator(): kotlin.IntIterator
     public final fun set(/*0*/ index: kotlin.Int, /*1*/ value: kotlin.Int): kotlin.Unit
     public final fun size(): kotlin.Int
-}
-
-public trait IntDefaultObject {
 }
 
 public abstract class IntIterator : kotlin.Iterator<kotlin.Int> {

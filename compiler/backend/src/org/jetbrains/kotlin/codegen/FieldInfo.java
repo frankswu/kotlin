@@ -41,22 +41,17 @@ public class FieldInfo {
         else {
             ClassDescriptor ownerDescriptor = DescriptorUtils.getParentOfType(classDescriptor, ClassDescriptor.class);
             assert ownerDescriptor != null : "Owner not found for class: " + classDescriptor;
+
+            if (DescriptorUtils.isClassObject(classDescriptor) &&
+                (DescriptorUtils.getFqName(ownerDescriptor).asString().equals("kotlin.Int") ||
+                 DescriptorUtils.getFqName(ownerDescriptor).asString().equals("kotlin.Double"))) {
+                Type ownerType = typeMapper.mapType(classDescriptor);
+                return new FieldInfo(ownerType, ownerType, JvmAbi.INSTANCE_FIELD, true);
+            }
+
             Type ownerType = typeMapper.mapType(ownerDescriptor);
             return new FieldInfo(ownerType, typeMapper.mapType(classDescriptor), classDescriptor.getName().asString(), true);
         }
-
-        //ClassDescriptor ownerDescriptor = kind == ClassKind.OBJECT
-        //                                  ? classDescriptor
-        //                                  : DescriptorUtils.getParentOfType(classDescriptor, ClassDescriptor.class);
-        //
-        //assert ownerDescriptor != null : "Owner not found for class: " + classDescriptor;
-        //
-        //if (kind == ClassKind.CLASS_OBJECT &&
-        //    (DescriptorUtils.getFqName(ownerDescriptor).asString().equals("kotlin.Int") ||
-        //     DescriptorUtils.getFqName(ownerDescriptor).asString().equals("kotlin.Double"))) {
-        //    Type ownerType = typeMapper.mapType(classDescriptor);
-        //    return new FieldInfo(ownerType, ownerType, JvmAbi.INSTANCE_FIELD, true);
-        //}
     }
 
     @SuppressWarnings("deprecation")

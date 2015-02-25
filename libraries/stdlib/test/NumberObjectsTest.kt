@@ -25,12 +25,12 @@ class NumberObjectsTest {
         val i = Int
         val d = Double
 
-        assertEqual(12.2 : Double, Double.parse("12.2"))
+        assertEquals(12.2 : Double, Double.parse("12.2"))
 
-        assertEqual("Infinity", Double.POSITIVE_INFINITY.toString())
-        assertEqual("-Infinity", Double.NEGATIVE_INFINITY.toString())
-        assertEqual("NaN", Double.NaN.toString())
+        assertEquals("Infinity", Double.POSITIVE_INFINITY.toString())
+        assertEquals("-Infinity", Double.NEGATIVE_INFINITY.toString())
+        assertEquals("NaN", Double.NaN.toString())
 
-        assertEqual(12, Int.parse("12"))
+        assertEquals(12, Int.parse("12"))
     }
 }

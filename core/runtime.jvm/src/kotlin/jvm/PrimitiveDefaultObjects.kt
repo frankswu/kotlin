@@ -16,14 +16,14 @@
 
 package kotlin.jvm
 
-object IntDefaultObjectImpl : IntDefaultObject, Parsable<Int> {
+object IntDefaultObjectImpl : Parsable<Int> {
     override fun parse(str: String) = java.lang.Integer.parseInt(str)
 }
 
-public val IntDefaultObject.MIN_VALUE: Int get() = java.lang.Integer.MIN_VALUE
-public val IntDefaultObject.MAX_VALUE: Int get() = java.lang.Integer.MAX_VALUE
+public val Int.Default.MIN_VALUE: Int get() = java.lang.Integer.MIN_VALUE
+public val Int.Default.MAX_VALUE: Int get() = java.lang.Integer.MAX_VALUE
 
-object DoubleDefaultObjectImpl : DoubleDefaultObject, Parsable<Double> {
+object DoubleDefaultObjectImpl : Parsable<Double> {
     val POSITIVE_INFINITY : Double = java.lang.Double.POSITIVE_INFINITY
     val NEGATIVE_INFINITY : Double = java.lang.Double.NEGATIVE_INFINITY
     val NaN : Double = java.lang.Double.NaN
@@ -31,5 +31,5 @@ object DoubleDefaultObjectImpl : DoubleDefaultObject, Parsable<Double> {
     override fun parse(str: String) = java.lang.Double.parseDouble(str)
 }
 
-public val DoubleDefaultObject.MIN_VALUE: Double get() = java.lang.Double.MIN_VALUE
-public val DoubleDefaultObject.MAX_VALUE: Double get() = java.lang.Double.MAX_VALUE
+public val Double.Default.MIN_VALUE: Double get() = java.lang.Double.MIN_VALUE
+public val Double.Default.MAX_VALUE: Double get() = java.lang.Double.MAX_VALUE
