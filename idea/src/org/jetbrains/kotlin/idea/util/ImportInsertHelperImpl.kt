@@ -375,9 +375,10 @@ public class ImportInsertHelperImpl(private val project: Project) : ImportInsert
 
         private fun JetReferenceExpression.resolveTargets(): Collection<DeclarationDescriptor> {
             val bindingContext = resolutionFacade.analyze(this, BodyResolveMode.PARTIAL)
-            return bindingContext[BindingContext.REFERENCE_TARGET, this]?.let { listOf(it) }
-                          ?: bindingContext[BindingContext.AMBIGUOUS_REFERENCE_TARGET, this]
-                          ?: return listOf()
+            return bindingContext[BindingContext.CLASS_LITERAL_REFERS_DEFAULT_OBJECT, this]?.let { listOf(it) }
+                   ?: bindingContext[BindingContext.REFERENCE_TARGET, this]?.let { listOf(it) }
+                   ?: bindingContext[BindingContext.AMBIGUOUS_REFERENCE_TARGET, this]
+                   ?: return listOf()
         }
 
         private fun addImport(fqName: FqName, allUnder: Boolean): JetImportDirective {

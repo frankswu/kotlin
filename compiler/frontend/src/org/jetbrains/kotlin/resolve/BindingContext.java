@@ -95,6 +95,8 @@ public interface BindingContext {
 
     WritableSlice<JetReferenceExpression, DeclarationDescriptor> REFERENCE_TARGET =
             new BasicWritableSlice<JetReferenceExpression, DeclarationDescriptor>(DO_NOTHING);
+    WritableSlice<JetReferenceExpression, ClassDescriptor> CLASS_LITERAL_REFERS_DEFAULT_OBJECT =
+            new BasicWritableSlice<JetReferenceExpression, ClassDescriptor>(DO_NOTHING);
 
     @KotlinSignature("val RESOLVED_CALL: WritableSlice<Call, ResolvedCall<out CallableDescriptor>>")
     WritableSlice<Call, ResolvedCall<?>> RESOLVED_CALL = new BasicWritableSlice<Call, ResolvedCall<?>>(DO_NOTHING);

@@ -59,7 +59,8 @@ public class ShortenReferences(val options: (JetElement) -> Options = { Options.
                 = DescriptorRenderer.FQ_NAMES_IN_TYPES.render(this)
 
         private fun JetReferenceExpression.targets(context: BindingContext): Collection<DeclarationDescriptor> {
-            val targets = context[BindingContext.REFERENCE_TARGET, this]?.let { listOf(it) }
+            val targets = context[BindingContext.CLASS_LITERAL_REFERS_DEFAULT_OBJECT, this]?.let { listOf(it) }
+                          ?: context[BindingContext.REFERENCE_TARGET, this]?.let { listOf(it) }
                           ?: context[BindingContext.AMBIGUOUS_REFERENCE_TARGET, this]
                           ?: listOf()
             return targets.map { it.getImportableDescriptor() }.toSet()
