@@ -111,7 +111,12 @@ public class DescriptorSerializer {
             }
         }
 
-        // TODO: other constructors
+        for (ConstructorDescriptor constructorDescriptor : classDescriptor.getConstructors()) {
+            if (constructorDescriptor.isPrimary()) continue;
+            ProtoBuf.Class.SecondaryConstructor.Builder constructorBuilder = ProtoBuf.Class.SecondaryConstructor.newBuilder();
+            constructorBuilder.setData(callableProto(constructorDescriptor));
+            builder.addSecondaryConstructor(constructorBuilder);
+        }
 
         for (DeclarationDescriptor descriptor : sort(classDescriptor.getDefaultType().getMemberScope().getAllDescriptors())) {
             if (descriptor instanceof CallableMemberDescriptor) {

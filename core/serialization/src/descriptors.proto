@@ -199,9 +199,13 @@ message Class {
     optional Callable data = 1;
   }
 
+  message SecondaryConstructor {
+    required Callable data = 1;
+  }
+
   // This field is present if and only if the class has a primary constructor
   optional PrimaryConstructor primary_constructor = 13;
-  // todo: other constructors?
+  repeated SecondaryConstructor secondary_constructor = 14;
 
   extensions 100 to 199;
 }

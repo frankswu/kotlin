@@ -60,6 +60,7 @@ public class DeserializedClassDescriptor(
 
     private val containingDeclaration = outerContext.containingDeclaration
     private val primaryConstructor = c.storageManager.createNullableLazyValue { computePrimaryConstructor() }
+    private val constructors = c.storageManager.createLazyValue { computeConstructors() }
     private val classObjectDescriptor = c.storageManager.createNullableLazyValue { computeClassObjectDescriptor() }
 
     private val annotations =
@@ -98,16 +99,24 @@ public class DeserializedClassDescriptor(
             return descriptor
         }
 
-        return c.memberDeserializer.loadCallable(constructorProto.getData()) as ConstructorDescriptor
+        return c.memberDeserializer.loadConstructor(constructorProto.getData(), true)
     }
 
     override fun getUnsubstitutedPrimaryConstructor(): ConstructorDescriptor? = primaryConstructor()
 
-    override fun getConstructors(): Collection<ConstructorDescriptor> {
-        val constructor = getUnsubstitutedPrimaryConstructor() ?: return listOf()
-        // TODO: other constructors
-        return listOf(constructor)
+    private fun computeConstructors(): Collection<ConstructorDescriptor> {
+        val secondaryConstructors = computeSecondaryConstructors()
+        val constructor = getUnsubstitutedPrimaryConstructor() ?: return secondaryConstructors
+        return secondaryConstructors + constructor
     }
+
+    private fun computeSecondaryConstructors(): List<ConstructorDescriptor> {
+        return classProto.getSecondaryConstructorList().map {
+            c.memberDeserializer.loadConstructor(it.getData(), false)
+        }
+    }
+
+    override fun getConstructors() = constructors()
 
     private fun computeClassObjectDescriptor(): ClassDescriptor? {
         if (!classProto.hasClassObjectName()) return null
