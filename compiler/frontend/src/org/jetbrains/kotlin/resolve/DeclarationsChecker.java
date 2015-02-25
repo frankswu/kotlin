@@ -569,18 +569,5 @@ public class DeclarationsChecker {
         if (!constructor.getValueParameters().isEmpty() && delegationSpecifiers.isEmpty()) {
             trace.report(ENUM_ENTRY_SHOULD_BE_INITIALIZED.on(enumEntry, enumClass));
         }
-
-        for (JetDelegationSpecifier delegationSpecifier : delegationSpecifiers) {
-            JetTypeReference typeReference = delegationSpecifier.getTypeReference();
-            if (typeReference != null) {
-                JetType type = trace.getBindingContext().get(TYPE, typeReference);
-                if (type != null) {
-                    JetType enumType = enumClass.getDefaultType();
-                    if (!type.getConstructor().equals(enumType.getConstructor())) {
-                        trace.report(ENUM_ENTRY_ILLEGAL_TYPE.on(typeReference, enumClass));
-                    }
-                }
-            }
-        }
     }
 }
