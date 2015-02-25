@@ -51,6 +51,7 @@ import com.intellij.openapi.roots.ProjectRootModificationTracker
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.impl.*
 import com.intellij.openapi.vfs.*
+import kotlin.properties.*
 
 public abstract class AndroidUIXmlProcessor(protected val project: Project) {
 
@@ -61,29 +62,35 @@ public abstract class AndroidUIXmlProcessor(protected val project: Project) {
             "android.view.View",
             "android.widget.*")
 
-    private val vfsTracker = VfsModificationTracker(project, resourceManager.getMainLayoutDirectory())
-
-    private val cachedSources = cachedValue {
-        Result.create(parse(), vfsTracker)
-    }
-
-    private val cachedJetFiles = cachedValue {
-        val psiManager = PsiManager.getInstance(project)
-        val applicationPackage = resourceManager.androidModuleInfo?.applicationPackage
-
-        val jetFiles = cachedSources.getValue().mapIndexed { (index, text) ->
-            val virtualFile = LightVirtualFile(AndroidConst.SYNTHETIC_FILENAME + index + ".kt", text)
-            val jetFile = psiManager.findFile(virtualFile) as JetFile
-            if (applicationPackage != null) {
-                jetFile.putUserData(AndroidConst.ANDROID_USER_PACKAGE, applicationPackage)
-            }
-            jetFile
-        }
-
-        Result.create(jetFiles, cachedSources)
-    }
-
     public abstract val resourceManager: AndroidResourceManager
+
+    private val vfsTracker: VfsModificationTracker by Delegates.lazy {
+        VfsModificationTracker(project, resourceManager.getMainLayoutDirectory())
+    }
+
+    private val cachedSources: CachedValue<List<String>> by Delegates.lazy {
+        cachedValue {
+            Result.create(parse(), vfsTracker)
+        }
+    }
+
+    private val cachedJetFiles: CachedValue<List<JetFile>> by Delegates.lazy {
+        cachedValue {
+            val psiManager = PsiManager.getInstance(project)
+            val applicationPackage = resourceManager.androidModuleInfo?.applicationPackage
+
+            val jetFiles = cachedSources.getValue().mapIndexed { (index, text) ->
+                val virtualFile = LightVirtualFile(AndroidConst.SYNTHETIC_FILENAME + index + ".kt", text)
+                val jetFile = psiManager.findFile(virtualFile) as JetFile
+                if (applicationPackage != null) {
+                    jetFile.putUserData(AndroidConst.ANDROID_USER_PACKAGE, applicationPackage)
+                }
+                jetFile
+            }
+
+            Result.create(jetFiles, cachedSources)
+        }
+    }
 
     protected val LOG: Logger = Logger.getInstance(javaClass)
 
@@ -135,7 +142,7 @@ private class VfsModificationTracker(project: Project, resDirectory: VirtualFile
     {
         val connection = project.getMessageBus().connect();
         connection.subscribe(VirtualFileManager.VFS_CHANGES, BulkVirtualFileListenerAdapter(
-                object : VirtualFileAdapter() {
+                object : VirtualFileListener {
                     fun incModificationCountIfLayout(file: VirtualFile) {
                         if (resDirectory == null) {
                             incModificationCount()
@@ -171,6 +178,14 @@ private class VfsModificationTracker(project: Project, resDirectory: VirtualFile
                     override fun fileCopied(event: VirtualFileCopyEvent) {
                         incModificationCountIfLayout(event.getFile())
                     }
+
+                    override fun beforePropertyChange(event: VirtualFilePropertyEvent) {}
+
+                    override fun beforeContentsChange(event: VirtualFileEvent) {}
+
+                    override fun beforeFileDeletion(event: VirtualFileEvent) {}
+
+                    override fun beforeFileMovement(event: VirtualFileMoveEvent) {}
                 }
         ))
     }
