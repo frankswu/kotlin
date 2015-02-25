@@ -26,7 +26,7 @@ public fun ClassDescriptor.getClassObjectReferenceTarget(): ClassDescriptor = ge
 
 public fun DeclarationDescriptor.getImportableDescriptor(): DeclarationDescriptor {
     return when {
-        this is ConstructorDescriptor -> getContainingDeclaration()!!
+        this is ConstructorDescriptor -> getContainingDeclaration()
         this is PropertyAccessorDescriptor -> getCorrespondingProperty()
         else -> this
     }
